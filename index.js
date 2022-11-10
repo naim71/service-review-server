@@ -17,12 +17,22 @@ async function run(){
     try{
         const serviceCollection =client.db('serviceReview').collection('services');
 
+        app.post('/services', async (req, res) =>{
+            const service = req.body;
+            console.log(service);
+            const result = await serviceCollection.insertOne(service)
+            res.send(result);
+        });
+
         app.get('/services', async(req, res) =>{
             const query = {};
             const cursor = serviceCollection.find(query);
             const services = await cursor.toArray();
             res.send(services);
         });
+
+        
+
         app.get('/servicesById', async(req, res) =>{
             const query = {};
             const cursor = serviceCollection.find(query).sort({_id:-1}).limit(3);
