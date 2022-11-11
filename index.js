@@ -48,6 +48,11 @@ async function run(){
             const service = await serviceCollection.findOne(query);
             res.send(service);
         });
+        
+        app.post('/reviews', async(req, res)=>{
+            const review = req.body;
+            const result = await reviewCollection.insertOne(review);
+        })
 
         app.get('/reviews', async(req,res) =>{
             let query = {};
@@ -58,8 +63,9 @@ async function run(){
         app.get('/reviews/:serviceId', async(req,res) =>{
             const ser = req.params.serviceId;
             const query = {serviceId: ser};
-            const review = await reviewCollection.findOne(query);
-            res.send(review);
+            const review = await reviewCollection.find(query);
+            const collection = await review.toArray();
+            res.send(collection);
         })
         
     }
