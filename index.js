@@ -17,6 +17,7 @@ async function run(){
     try{
         const serviceCollection =client.db('serviceReview').collection('services');
         const reviewCollection =client.db('serviceReview').collection('reviews');
+        const reviewCollection2 =client.db('serviceReview').collection('reviews1');
 
         app.post('/services', async (req, res) =>{
             const service = req.body;
@@ -49,40 +50,37 @@ async function run(){
             res.send(service);
         });
         
-        app.post('/reviews', async(req, res)=>{
-            const review = req.body;
-            console.log(review);
-            const result = await reviewCollection.insertOne(review);
-            res.send(result);
-        })
-        app.get('/reviews/:id', async(req, res)=>{
-            const id = req.params.id;
-            console.log(id);
-            const query = {_id: ObjectId(id)};
-            const service = await reviewCollection.findOne(query);
-            res.send(service);
-        })
-        app.delete('/reviews/:id', async(req, res)=>{
-            const id = req.params.id;
-            console.log('trying to delete',id);
-            const query = {_id: ObjectId(id)};
-            const result = await reviewCollection.deleteOne(query);
-            console.log(result);
-            res.send(result);
-        })
-
         app.get('/reviews', async(req,res) =>{
             let query = {};
             const cursor = reviewCollection.find(query);
             const reviews = await cursor.toArray();
             res.send(reviews);
         })
-        app.get('/reviews/:serviceId', async(req,res) =>{
-            const ser = req.params.serviceId;
-            const query = {serviceId: ser};
-            const review = await reviewCollection.find(query);
-            const collection = await review.toArray();
-            res.send(collection);
+        app.post('/reviews', async(req, res)=>{
+            const review = req.body;
+            console.log(review);
+            const result = await reviewCollection.insertOne(review);
+            res.send(result);
+        })
+
+        app.get('/reviews1', async(req,res) =>{
+            let query = {};
+            const cursor = reviewCollection2.find(query);
+            const reviews = await cursor.toArray();
+            res.send(reviews);
+        })
+        app.get('/reviews1/:serviceId', async(req,res) =>{
+            const id = req.params.serviceId;
+            const query = {serviceId: id};
+            const collection= reviewCollection2.find(query);
+            const result = await collection.toArray();
+            res.send(result);
+        })
+        app.post('/reviews1', async(req, res)=>{
+            const review = req.body;
+            console.log(review);
+            const result = await reviewCollection2.insertOne(review);
+            res.send(result);
         })
        
     }
